@@ -6,6 +6,7 @@
 // @author       Rick O'Donnell
 // @match        http://frc-districtrankings.usfirst.org/2016/NE
 // @grant        none
+// @require      https://code.jquery.com/jquery-2.1.4.min.js
 // ==/UserScript==
 /* jshint -W097 */
 'use strict';
@@ -41,23 +42,23 @@ dsa.guessLevel = function(pts, evts) {
     if (likelyPts > 42) return "unlikely";
     if (evts === 2) return "out";
     return "unlikely";
-}
+};
 
 // Go through and get all the teams data
 var teams = [];
-$("tr[role=row]").each(function() {
-    if (dsa.isFirstRow($(this))) { console.log("found row one"); return true; } // skip the first row
+jQuery("tr[role=row]").each(function() {
+    if (dsa.isFirstRow(jQuery(this))) return true; // skip the first row
     var tm = {};
-    tm.row = $(this);
-    tm.currRank = parseInt($(this).find("td:eq(0)").text());
-    tm.currPts = parseInt($(this).find("td:eq(1)").text());
-    tm.numberName = $(this).find("td:eq(2)").text();
-    var evt1 = $(this).find("td:eq(3)").text();
-    var evt2 = $(this).find("td:eq(4)").text();
+    tm.row = jQuery(this);
+    tm.currRank = parseInt(tm.row.find("td:eq(0)").text());
+    tm.currPts = parseInt(tm.row.find("td:eq(1)").text());
+    tm.numberName = tm.row.find("td:eq(2)").text();
+    var evt1 = tm.row.find("td:eq(3)").text();
+    var evt2 = tm.row.find("td:eq(4)").text();
     tm.evt1Pts = evt1 === dsa.eventNotPlayedText ? -1 : parseInt(evt1);
     tm.evt2Pts = evt2 === dsa.eventNotPlayedText ? -1 : parseInt(evt2);
-    tm.isAutoQualified = ($(this).find("td:eq(5)").text().indexOf(dsa.notAutoQualifiedText) === -1);
-    tm.agePts = parseInt($(this).find("td:eq(7)").text());
+    tm.isAutoQualified = (tm.row.find("td:eq(5)").text().indexOf(dsa.notAutoQualifiedText) === -1);
+    tm.agePts = parseInt(tm.row.find("td:eq(7)").text());
     tm.eventsPlayed = tm.evt1Pts === -1 ? 0 : (tm.evt2Pts === -1 ? 1 : 2);
     
     teams.push(tm);
